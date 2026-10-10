@@ -1,5 +1,5 @@
-   {
-     "functions": {
-       "server.js": { "includeFiles": "{public,data}/**" }
-     }
-   }
+{
+  "functions": {
+    "server.js": { "includeFiles": "{public,data}/**" }
+  }
+}
