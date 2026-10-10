@@ -34,6 +34,10 @@
         <label class="grow">Search <input id="q" type="search"></label>
         <button>Search</button>
       </form>
+      <div class="row">
+        <label>Category <select id="category"><option value="">All</option><option>Agriculture</option><option>Health</option><option>Housing</option><option>Savings and pension</option><option>Banking and loans</option><option>Education and scholarships</option><option>Skills and employment</option><option>Women and children</option><option>Scheme discovery</option><option>Government services</option></select></label>
+        <label>Scope <select id="scope"><option value="">All</option><option>Central Government</option></select></label>
+      </div>
       <p id="catalogueNote" class="muted"></p>
       <div id="results"></div>
     </section>
@@ -78,6 +82,23 @@
     <section id="saved" data-view hidden>
       <h2>Saved schemes</h2>
       <div id="savedList"></div>
+    </section>
+  <section id="scheme" data-view hidden>
+      <a href="#discover">Back to schemes</a>
+      <div class="split">
+        <article id="detailBody"></article>
+        <aside id="chat" aria-label="Scheme assistant">
+          <h3>Ask about this scheme</h3>
+          <div id="chatLog" role="log"></div>
+          <form id="chatForm">
+            <label>Language
+              <select id="chatLang"><option value="en">English</option><option value="hi">हिन्दी</option><option value="hinglish">Hinglish</option></select>
+            </label>
+            <label>Your question <textarea id="chatText" maxlength="1000" required></textarea></label>
+            <button>Send</button>
+          </form>
+        </aside>
+      </div>
     </section>
   </main>
   <script src="app.js" type="module"></script>
