@@ -1,0 +1,36 @@
+{
+  "note": "Starter catalogue. These are official portals, not individual scheme records. Individual schemes are added only after checking the official page.",
+  "lastChecked": null,
+  "entries": [
+    {
+      "id": "myscheme",
+      "title": "MyScheme",
+      "summary": "Government of India search service for central and state schemes.",
+      "scope": "Central Government",
+      "category": "Scheme discovery",
+      "applyUrl": "https://www.myscheme.gov.in/",
+      "sourceUrl": "https://www.myscheme.gov.in/",
+      "verification": "Portal link only, scheme details not imported"
+    },
+    {
+      "id": "nsp",
+      "title": "National Scholarship Portal",
+      "summary": "One place to find and apply for scholarships listed by central and state departments.",
+      "scope": "Central Government",
+      "category": "Education and scholarships",
+      "applyUrl": "https://scholarships.gov.in/",
+      "sourceUrl": "https://scholarships.gov.in/",
+      "verification": "Portal link only, scheme details not imported"
+    },
+    {
+      "id": "services",
+      "title": "National Government Services Portal",
+      "summary": "Directory of government services and the portals that offer them.",
+      "scope": "Central Government",
+      "category": "Government services",
+      "applyUrl": "https://services.india.gov.in/",
+      "sourceUrl": "https://services.india.gov.in/",
+      "verification": "Portal link only, scheme details not imported"
+    }
+  ]
+}

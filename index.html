@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GaonSahayak AI</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="sidebar" aria-label="Main">
+    <strong class="brand">GaonSahayak AI</strong>
+    <a href="#home">Home</a>
+    <a href="#discover">Discover schemes</a>
+    <a href="#assistant">AI assistant</a>
+    <a href="#studio">Document Studio</a>
+    <a href="#saved">Saved schemes</a>
+  </nav>
+
+  <main>
+    <p class="notice">GaonSahayak AI is not a government service. Always confirm details and apply on the official portal.</p>
+
+    <section id="home" data-view>
+      <h1>Every benefit you're eligible for, made easier to understand.</h1>
+      <p>Find official portals, ask questions about a scheme, and get your photo and signature files ready for upload.</p>
+      <form id="homeSearch" class="row">
+        <label class="grow">Search schemes <input name="q" type="search"></label>
+        <button>Search</button>
+      </form>
+    </section>
+
+    <section id="discover" data-view hidden>
+      <h2>Discover schemes</h2>
+      <form id="searchForm" class="row">
+        <label class="grow">Search <input id="q" type="search"></label>
+        <button>Search</button>
+      </form>
+      <p id="catalogueNote" class="muted"></p>
+      <div id="results"></div>
+    </section>
+
+    <section id="assistant" data-view hidden>
+      <h2>AI assistant</h2>
+      <form id="askForm">
+        <label>Scheme <select id="askScheme"></select></label>
+        <label>Language
+          <select id="askLang">
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="hinglish">Hinglish</option>
+          </select>
+        </label>
+        <label>Your question <textarea id="askText" maxlength="1000" required></textarea></label>
+        <button>Ask</button>
+      </form>
+      <div id="answer" role="status"></div>
+    </section>
+
+    <section id="studio" data-view hidden>
+      <h2>FormSaathi Document Studio</h2>
+      <p class="muted">Images are processed in your browser and never uploaded.</p>
+      <form id="imageForm">
+        <label>Image (JPG or PNG) <input id="file" type="file" accept="image/jpeg,image/png" required></label>
+        <div class="row">
+          <label>Max size (KB) <input id="maxKb" type="number" min="10" value="200"></label>
+          <label>Width (px) <input id="width" type="number" min="1"></label>
+          <label>Height (px) <input id="height" type="number" min="1"></label>
+        </div>
+        <button>Process image</button>
+      </form>
+      <div id="studioMessage" role="status"></div>
+      <div class="row">
+        <figure><figcaption id="beforeInfo">Original</figcaption><img id="before" alt=""></figure>
+        <figure><figcaption id="afterInfo">Processed</figcaption><img id="after" alt=""></figure>
+      </div>
+      <a id="download" hidden>Download processed image</a>
+    </section>
+
+    <section id="saved" data-view hidden>
+      <h2>Saved schemes</h2>
+      <div id="savedList"></div>
+    </section>
+  </main>
+  <script src="app.js" type="module"></script>
+</body>
+</html>
