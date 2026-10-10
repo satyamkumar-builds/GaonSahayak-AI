@@ -27,9 +27,11 @@ function schemeCard(scheme, onChange) {
     el("a", "Official site", { href: scheme.applyUrl, target: "_blank", rel: "noopener" }),
     el("a", "Source", { href: scheme.sourceUrl, target: "_blank", rel: "noopener" })
   );
+  const detailsBtn = el("button", "View details", { type: "button" });
+  detailsBtn.addEventListener("click", () => { location.hash = `#scheme/${scheme.id}`; });
   const saveBtn = el("button", getSaved().includes(scheme.id) ? "Remove from saved" : "Save", { type: "button" });
   saveBtn.addEventListener("click", () => { toggleSaved(scheme.id); onChange(); });
-  card.append(saveBtn);
+  card.append(detailsBtn, saveBtn);
   return card;
 }
 
@@ -41,7 +43,8 @@ function renderResults() {
 }
 
 async function search(q = "") {
-  const res = await fetch(`/api/schemes?q=${encodeURIComponent(q)}`);
+  const params = new URLSearchParams({ q, category: $("category").value, scope: $("scope").value });
+  const res = await fetch(`/api/schemes?${params}`);
   const data = await res.json();
   catalogue = data.entries;
   $("catalogueNote").textContent = data.note;
@@ -164,13 +167,89 @@ $("imageForm").addEventListener("submit", async (e) => {
 });
 
 function showView() {
-  const name = location.hash.slice(1) || "home";
+  const [name, id] = (location.hash.slice(1) || "home").split("/");
   document.querySelectorAll("[data-view]").forEach((s) => { s.hidden = s.id !== name; });
-  document.querySelectorAll(".sidebar a").forEach((a) => a.classList.toggle("active", a.hash === `#${name}`));
+  const menu = name === "scheme" ? "discover" : name;
+  document.querySelectorAll(".sidebar a").forEach((a) => a.classList.toggle("active", a.hash === `#${menu}`));
   if (name === "discover") search($("q").value);
   if (name === "saved") renderSaved();
+  if (name === "scheme") openScheme(id);
 }
 
 window.addEventListener("hashchange", showView);
 fillSchemeSelect();
 showView();
+
+let currentScheme = null;
+
+function listBlock(title, items) {
+  const box = el("div");
+  box.append(el("h3", title));
+  if (!items || !items.length) return box.appendChild(el("p", "Not listed yet.", { className: "muted" })) && box;
+  const list = el("ul");
+  items.forEach((item) => list.append(el("li", item)));
+  box.append(list);
+  return box;
+}
+
+function textBlock(title, text) {
+  const box = el("div");
+  box.append(el("h3", title), el("p", text || "Not listed yet.", { className: text ? "" : "muted" }));
+  return box;
+}
+
+async function openScheme(id) {
+  const body = $("detailBody");
+  $("chatLog").replaceChildren();
+  body.replaceChildren(el("p", "Loading..."));
+  try {
+    const res = await fetch(`/api/schemes/${encodeURIComponent(id)}`);
+    if (!res.ok) throw new Error("This scheme was not found.");
+    currentScheme = await res.json();
+  } catch (err) {
+    body.replaceChildren(el("p", err.message, { className: "err" }));
+    return;
+  }
+  const s = currentScheme;
+  const status = s.verified
+    ? `Checked against the official source on ${s.lastVerified}.`
+    : "Not yet checked against the official page. Confirm every detail on the official site.";
+  body.replaceChildren(
+    el("h2", s.title),
+    el("p", s.summary),
+    el("p", status, { className: s.verified ? "ok" : "err" }),
+    listBlock("Eligibility", s.eligibility),
+    textBlock("Benefits", s.benefits),
+    listBlock("Documents", s.documents),
+    listBlock("How to apply", s.steps),
+    textBlock("Dates", s.dates),
+    el("a", "Open official page", { href: s.applyUrl, target: "_blank", rel: "noopener" })
+  );
+}
+
+function addChatMessage(who, text, isError = false) {
+  const line = el("p", `${who}: ${text}`, { className: isError ? "msg err" : "msg" });
+  $("chatLog").append(line);
+  line.scrollIntoView({ block: "nearest" });
+}
+
+$("chatForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const question = $("chatText").value.trim();
+  if (!question || !currentScheme) return;
+  addChatMessage("You", question);
+  $("chatText").value = "";
+  try {
+    const res = await fetch("/api/assistant", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, schemeId: currentScheme.id, language: $("chatLang").value }),
+    });
+    const data = await res.json();
+    addChatMessage("Assistant", res.ok ? data.answer : data.error, !res.ok);
+  } catch {
+    addChatMessage("Assistant", "Could not reach the server. Check your connection.", true);
+  }
+});
+
+["category", "scope"].forEach((id) => $(id).addEventListener("change", () => search($("q").value)));
